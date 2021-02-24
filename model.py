@@ -80,10 +80,10 @@ class param:
         self.β = 315774/self.T  
         self.m = np.ones(ndof) 
         self.m[1:] *= 1836.0 # protons
-        self.t = 8400
+        self.t = 4200
         self.dt = 1.0
         self.ωc = 0.06/27.2114
         self.χ  = self.ωc * 0.0
         self.λ = np.zeros(ndof)   
-        self.λ[1] = 0.1/27.2114
+        self.λ[1] = 0.05/27.2114
         self.traj = 1

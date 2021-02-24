@@ -15,28 +15,38 @@ import numpy as np
 from model import *
 
 #-------- Parameters -----------
-trajs = 20
+trajs = 1
 ndof  = 12
 #-------------------------------
+t0 = time.time()
 
-par = param(int(ndof))
 sbatch = [i for i in open('parallel.py',"r").readlines() if i[:10].find("#SBATCH") != -1 ]
-nodes = int(sbatch[-1].split("=")[-1].replace("\n","")) 
-cpu   = int(sbatch[-2].split()[-1].replace("\n",""))
+cpu = int(sbatch[-1].split("=")[-1].replace("\n","")) 
+nodes = int(sbatch[-2].split()[-1].replace("\n",""))
 print (f"nodes : {nodes} | cpu : {cpu}")
 procs = cpu * nodes
 print (f"Total trajectories {procs * trajs}")
 ntraj = procs * trajs
-par.traj = trajs
-#---------- Run ----------------
-with Pool(procs) as p:
 
-    fs_  = p.map(main.run, [par for i in range(procs)])
-    fs = np.zeros(fs_[0].shape, dtype = fs_[0].dtype)
-    nSteps = fs.shape[0]
-    for i in range(procs):
-        fs += fs_[i]
-    fs /= procs
-     
-    np.savetxt("fs.txt",fs.T)
+#---------- Run ----------------------------
+with Pool(procs) as p:
+    #------ Arguments for each CPU--------
+    args = []
+    for j in range(procs):
+        par = param(int(ndof)) 
+        par.traj = trajs
+        par.ID   = j
+        args.append(par)
+    #-------------------------------------
+    fs_  = p.map(main.run, args)
+
+fs = np.zeros(fs_[0].shape, dtype = fs_[0].dtype)
+nSteps = fs.shape[0]
+for i in range(procs):
+    fs += fs_[i]
+fs /= procs
+t =  np.arange(0,par.t,par.dt) 
+np.savetxt("fs.txt",np.c_[t,fs])
+
+print (f"Total Time: {time.time()-t0}")
 #-------------------------------

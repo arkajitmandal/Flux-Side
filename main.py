@@ -10,16 +10,16 @@ import time
 
 def run(param, output=False):
     ndof = param.ndof
+    t0 = time.time()
     t = np.arange(0,param.t,param.dt) 
     xavg = np.zeros(len(t)) 
     fs = np.zeros(len(t)) 
     fs0 = 0.0
+    np.random.seed(param.ID)
     for itraj in range(param.traj):   
         x = np.zeros(ndof)  
         p = np.zeros(ndof)
 
-        
-        
         # Eql
         """
         #--- Freeze 1 ------
@@ -34,8 +34,8 @@ def run(param, output=False):
         x, p = init(param)
         p0   = p[1] 
         fs0 += (p0  > 0) * p0  
-
-        print (f"Traj : {itraj} | p : {p[1]} | Time: {time.time()}")
+        
+        print (f"p: {p[1]}, ID: {param.ID}")
         # MD
         for ti in range(len(t)):
             x, p = vvl( x , p, param)
@@ -47,8 +47,9 @@ def run(param, output=False):
     xavg = xavg/param.traj
     fs = fs/(fs0 )
     if output:
-        np.savetxt("x.txt",np.c_[t,xavg])
-        np.savetxt("fs.txt",np.c_[t,fs])
+        np.savetxt(f"x-{param.ID}.txt",np.c_[t,xavg])
+        np.savetxt(f"fs-{param.ID}.txt",np.c_[t,fs])
+    print (f"Time: {time.time()-t0}")
     return fs
 
 
