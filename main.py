@@ -15,7 +15,8 @@ def run(param, output=False):
     xavg = np.zeros(len(t)) 
     fs = np.zeros(len(t)) 
     fs0 = 0.0
-    np.random.seed(param.ID)
+    np.random.seed(param.SEED)
+    print (f"ID: {param.ID}, SEED: {param.SEED}")
     for itraj in range(param.traj):   
         x = np.zeros(ndof)  
         p = np.zeros(ndof)
@@ -35,10 +36,11 @@ def run(param, output=False):
         p0   = p[1] 
         fs0 += (p0  > 0) * p0  
         
-        print (f"p: {p[1]}, ID: {param.ID}")
+        
         # MD
+        f1 = force(x, param)
         for ti in range(len(t)):
-            x, p = vvl( x , p, param)
+            x, p, f1 = vvl( x , p, param, f1)
             xavg[ti] += x[1] 
             fs[ti] += (x[1]>0) * p0
 

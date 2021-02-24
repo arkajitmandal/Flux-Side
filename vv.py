@@ -11,10 +11,11 @@ def vv(x, p, param):
     p += 0.5 * (f1 + f2) * dt 
     return x,p
 
-def vvl(x, p, param):
+def vvl(x, p, param, f1 = "DO" ):
+    if f1=="DO":
+        f1 = model.force(x, param)
     ndof = param.ndof
     ß  = param.β
-    f1 = model.force(x, param) 
     v = p/param.m
     dt = param.dt
     λ = param.λ #/ param.m
@@ -29,5 +30,5 @@ def vvl(x, p, param):
     #---- V update ----------- 
     v += ( 0.5 * dt * (f1+f2)/param.m - dt * λ * v +  gran(0, σ * dt, ndof) - A * λ ) 
     #-------------------------
-    return x, v * param.m
+    return x, v * param.m, f2
 

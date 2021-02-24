@@ -3,7 +3,7 @@
 #SBATCH -o my_output_%j
 #SBATCH --mem-per-cpu=1GB
 #SBATCH -t 1:00:00
-#SBATCH -N 1
+#SBATCH -N 4
 #SBATCH --ntasks-per-node=24
 
 import sys
@@ -15,7 +15,7 @@ import numpy as np
 from model import *
 
 #-------- Parameters -----------
-trajs = 1
+trajs = 40
 ndof  = 12
 #-------------------------------
 t0 = time.time()
@@ -36,6 +36,7 @@ with Pool(procs) as p:
         par = param(int(ndof)) 
         par.traj = trajs
         par.ID   = j
+        par.SEED   = np.random.randint(0,100000000)
         args.append(par)
     #-------------------------------------
     fs_  = p.map(main.run, args)
