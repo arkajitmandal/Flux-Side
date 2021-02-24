@@ -5,18 +5,16 @@ import sys
 import copy
 from numpy.random import normal as gran
 
-global ndof
-ndof = int(sys.argv[1])
-par = param(int(ndof))
-traj = int(sys.argv[2])
 
-def run(param):
+
+
+def run(param, output=False):
+    ndof = param.ndof
     t = np.arange(0,param.t,param.dt) 
-    xf = np.zeros(len(t)) 
-    xb = np.zeros(len(t)) 
+    xavg = np.zeros(len(t)) 
     fs = np.zeros(len(t)) 
     fs0 = 0.0
-    for itraj in range(traj):   
+    for itraj in range(param.traj):   
         x = np.zeros(ndof)  
         p = np.zeros(ndof)
 
@@ -40,18 +38,23 @@ def run(param):
         # MD
         for ti in range(len(t)):
             x, p = vvl( x , p, param)
-            xf[ti] += x[1] 
-            xb[ti] += x[1] 
+            xavg[ti] += x[1] 
             fs[ti] += (x[1]>0) * p0
 
 
-    xf = xf/traj
-    xb = xb/traj
+
+    xavg = xavg/param.traj
     fs = fs/(fs0 )
-    np.savetxt("x.txt",np.c_[t,xf,xb])
-    np.savetxt("fs.txt",np.c_[t,fs])
+    if output:
+        np.savetxt("x.txt",np.c_[t,xavg])
+        np.savetxt("fs.txt",np.c_[t,fs])
+    return fs
 
 
 
-
-run(par)
+if __name__ == "__main__": 
+    ndof = int(sys.argv[1])
+    par = param(int(ndof))
+    traj = int(sys.argv[2])
+    par.traj = traj
+    run(par, output=True)
