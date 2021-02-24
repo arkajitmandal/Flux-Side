@@ -4,7 +4,7 @@ from model import *
 import sys
 import copy
 from numpy.random import normal as gran
-
+import time
 
 
 
@@ -18,7 +18,7 @@ def run(param, output=False):
         x = np.zeros(ndof)  
         p = np.zeros(ndof)
 
-
+        
         
         # Eql
         """
@@ -35,6 +35,7 @@ def run(param, output=False):
         p0   = p[1] 
         fs0 += (p0  > 0) * p0  
 
+        print (f"Traj : {itraj} | p : {p[1]} | Time: {time.time()}")
         # MD
         for ti in range(len(t)):
             x, p = vvl( x , p, param)

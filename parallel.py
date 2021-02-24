@@ -15,7 +15,7 @@ import numpy as np
 from model import *
 
 #-------- Parameters -----------
-trajs = 10
+trajs = 20
 ndof  = 12
 #-------------------------------
 
@@ -34,9 +34,9 @@ with Pool(procs) as p:
     fs_  = p.map(main.run, [par for i in range(procs)])
     fs = np.zeros(fs_[0].shape, dtype = fs_[0].dtype)
     nSteps = fs.shape[0]
-    for i in range(cpu):
+    for i in range(procs):
         fs += fs_[i]
-    fs /= ntraj
+    fs /= procs
      
     np.savetxt("fs.txt",fs.T)
 #-------------------------------

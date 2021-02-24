@@ -85,5 +85,5 @@ class param:
         self.ωc = 0.06/27.2114
         self.χ  = self.ωc * 0.0
         self.λ = np.zeros(ndof)   
-        self.λ[1] = 0.01/27.2114
+        self.λ[1] = 0.1/27.2114
         self.traj = 1
