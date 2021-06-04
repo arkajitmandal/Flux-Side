@@ -21,16 +21,6 @@ def run(param, output=False):
         x = np.zeros(ndof)  
         p = np.zeros(ndof)
 
-        # Eql
-        """
-        #--- Freeze 1 ------
-        # 0 is cavity, 1 barrier, 2 to N is rest
-        fr = np.ones((3))
-        fr[1] = 0.0  
-        #-------------------
-        for ti in range(len(t)*10):
-            x, p = vvl( x , p, param, fr)
-        """
         # Sample
         x, p = init(param)
         p0   = p[1] 
